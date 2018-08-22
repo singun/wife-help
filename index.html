@@ -1,0 +1,2658 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Create two equal columns that floats next to each other */
+
+    .column {
+      float: left;
+      width: 30%;
+    }
+
+    /* Clear floats after the columns */
+
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div class="row">
+    <div id="station" class="column">
+      <input v-model="search" placeholder="역이름을 한글로 입력해주세요.">
+
+      <ul>
+        <li v-for="item in filteredStation">
+          {{ item.kor }}, <b>{{ item.eng }}</b>
+          <span v-if="search">Station</span>
+        </li>
+      </ul>
+    </div>
+
+    <div id="airport" class="column">
+      <input v-model="search" placeholder="공항명을 한글로 입력해주세요.">
+
+      <ul>
+        <li v-for="item in filteredAirport">
+          {{ item.kor }}, <b>{{ item.eng }}</b>, {{ item.loc }}, {{ item.IATA}}
+        </li>
+      </ul>
+    </div>
+
+    <div id="hospital" class="column">
+      <input v-model="search" placeholder="병원명을 한글로 입력해주세요.">
+
+      <ul>
+          <li v-for="item in filteredHospital">
+            {{ item.kor }}, <b>{{ item.eng }}</b>, {{ item.type }}, {{ item.address }}
+            <span v-if="search">Hospital</span>
+          </li>
+        </ul>
+    </div>
+  </div>
+
+  <script>
+    var station = new Vue({
+      el: '#station',
+      computed: {
+        filteredStation() {
+          return this.ktx_list.filter(s => {
+            return s.kor.includes(this.search)
+          })
+        }
+      },
+      data: {
+        search: '',
+        ktx_list: [
+          { "kor": "서울", "eng": "Seoul" },
+          { "kor": "용산", "eng": "Yongsan" },
+          { "kor": "영등포", "eng": "Yeongdeungpo" },
+          { "kor": "광명", "eng": "Gwangmyeong" },
+          { "kor": "수원", "eng": "Suwon" },
+          { "kor": "평택", "eng": "Pyeongtaek" },
+          { "kor": "천안아산(온양온천)", "eng": "Cheonan-Asan(Onyangoncheon)" },
+          { "kor": "천안", "eng": "Cheonan" },
+          { "kor": "조치원", "eng": "Jochiwon" },
+          { "kor": "대전", "eng": "Daejeon" },
+          { "kor": "서대전", "eng": "Seodaejeon" },
+          { "kor": "김천", "eng": "Gimcheon" },
+          { "kor": "구미", "eng": "Gumi" },
+          { "kor": "김천", "eng": "Gimcheon" },
+          { "kor": "대구", "eng": "Daegu" },
+          { "kor": "동대구", "eng": "Dongdaegu" },
+          { "kor": "포항", "eng": "Pohang" },
+          { "kor": "밀양", "eng": "Miryang" },
+          { "kor": "구포", "eng": "Gupo" },
+          { "kor": "부산", "eng": "Busan" },
+          { "kor": "경주", "eng": "Gyeongju" },
+          { "kor": "신경주", "eng": "Singyeongju" },
+          { "kor": "태화강", "eng": "Taehwagang" },
+          { "kor": "울산", "eng": "Ulsan" },
+          { "kor": "진주", "eng": "Jinju" },
+          { "kor": "함안", "eng": "Haman" },
+          { "kor": "오송", "eng": "Osong" },
+          { "kor": "마산", "eng": "Masan" },
+          { "kor": "창원", "eng": "Changwon" },
+          { "kor": "창원중앙", "eng": "ChangwonJungang" },
+          { "kor": "진영", "eng": "Jinyeong" },
+          { "kor": "경산", "eng": "Gyeongsan" },
+          { "kor": "논산", "eng": "Nonsan" },
+          { "kor": "공주", "eng": "Gongju" },
+          { "kor": "익산", "eng": "Iksan" },
+          { "kor": "김제", "eng": "Gimje" },
+          { "kor": "정읍", "eng": "Jeongeup" },
+          { "kor": "장승", "eng": "Jangseong" },
+          { "kor": "광주", "eng": "Gwangju" },
+          { "kor": "나주", "eng": "Naju" },
+          { "kor": "목포", "eng": "Mokpo" },
+          { "kor": "광주송정", "eng": "Gwangjusongjeong" },
+          { "kor": "전주", "eng": "Jeonju" },
+          { "kor": "남원", "eng": "Namwon" },
+          { "kor": "순천", "eng": "Suncheon" },
+          { "kor": "여수엑스포", "eng": "YeosuExpo" },
+          { "kor": "온양", "eng": "Onyang" },
+          { "kor": "대천", "eng": "Daecheon" },
+          { "kor": "청량리", "eng": "Cheongnyangni" },
+          { "kor": "성북", "eng": "Seongbuk" },
+          { "kor": "제천", "eng": "Jecheon" },
+          { "kor": "동해", "eng": "Donghae" },
+          { "kor": "강릉", "eng": "Gangneung" },
+          { "kor": "행신", "eng": "Haengsin" },
+          { "kor": "계룡", "eng": "Gyeryong" },
+          { "kor": "인천국제공항", "eng": "IncheonInternationalAirport" },
+          { "kor": "인천검암", "eng": "Geomam" },
+          { "kor": "여천", "eng": "Yeocheon" },
+          { "kor": "구례구", "eng": "Guryegu" },
+          { "kor": "곡성", "eng": "Gokseong" },
+          { "kor": "춘천", "eng": "Chuncheon" },
+          { "kor": "상봉", "eng": "Sangbong" },
+          { "kor": "진부", "eng": "Jinbu" },
+          { "kor": "평창", "eng": "Pyeongchang" },
+          { "kor": "수서", "eng": "Suseo" },
+          { "kor": "동탄", "eng": "Dongtan" },
+          { "kor": "지제", "eng": "Jije" }
+        ]
+      }
+    });
+
+    var airport = new Vue({
+      el: '#airport',
+      computed: {
+        filteredAirport() {
+          return this.airport_list.filter(a => {
+            return a.kor.includes(this.search);
+          });
+        }
+      },
+      data: {
+        search: '',
+        airport_list: [
+          {
+            "kor": "서울/인천",
+            "eng": "Incheon International Airport",
+            "loc": "Seoul/Incheon",
+            "IATA": "ICN",
+          },
+          {
+            "kor": "서울/김포",
+            "eng": "Gimpo International Airport",
+            "loc": "Seoul/Gimpo",
+            "IATA": "GMP",
+          },
+          {
+            "kor": "양양",
+            "eng": "Yangyang International Airport",
+            "loc": "Yangyang",
+            "IATA": "YNY",
+          },
+          {
+            "kor": "제주",
+            "eng": "Jeju International Airport",
+            "loc": "Jeju",
+            "IATA": "CJU",
+          },
+          {
+            "kor": "울산",
+            "eng": "Ulsan Airport",
+            "loc": "Ulsan",
+            "IATA": "USN",
+          },
+          {
+            "kor": "무안",
+            "eng": "Muan International Airport",
+            "loc": "Muan",
+            "IATA": "MWX",
+          },
+          {
+            "kor": "여수",
+            "eng": "Yeosu Airport",
+            "loc": "Yeosu",
+            "IATA": "RSU",
+          },
+          {
+            "kor": "원주/횡성",
+            "eng": "Wonju Airport",
+            "loc": "Wonju/Hoengseong",
+            "IATA": "WJU",
+          },
+          {
+            "kor": "대구",
+            "eng": "Daegu International Airport",
+            "loc": "Daegu",
+            "IATA": "TAE",
+          },
+          {
+            "kor": "청주",
+            "eng": "Cheongju International Airport",
+            "loc": "Cheongju",
+            "IATA": "CJJ",
+          },
+          {
+            "kor": "포항",
+            "eng": "Pohang Airport",
+            "loc": "Pohang",
+            "IATA": "KPO",
+          },
+          {
+            "kor": "부산/김해",
+            "eng": "Gimhae International Airport",
+            "loc": "Busan/Gimhae",
+            "IATA": "PUS",
+          },
+          {
+            "kor": "사천",
+            "eng": "Sacheon Airport",
+            "loc": "Sacheon",
+            "IATA": "HIN",
+          },
+          {
+            "kor": "광주",
+            "eng": "Gwangju Airport",
+            "loc": "Gwangju",
+            "IATA": "KWJ",
+          },
+          {
+            "kor": "군산",
+            "eng": "Gunsan Airport",
+            "loc": "Gunsan",
+            "IATA": "KUV",
+          },
+        ]
+      }
+    })
+
+    var hospital = new Vue({
+      el: '#hospital',
+      computed: {
+        filteredHospital() {
+          return this.hospital_list.filter(h => {
+            return h.kor.includes(this.search)
+          })
+        }
+      },
+      data: {
+        search: '',
+        hospital_list :[
+          {
+            "kor": "의료법인 강릉동인병원",
+            "eng": "Gangneung Dongin Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-650-6113",
+            "address": "(25478) 강원도 강릉시 강릉대로419번길 42 42"
+          },
+          {
+            "kor": "강원도강릉의료원",
+            "eng": "Gangneung Medical Center",
+            "type": "종합병원",
+            "rep-phone": "033-610-1431",
+            "address": "(25535) 강원도 강릉시 경강로 2007- 2007"
+          },
+          {
+            "kor": "강릉아산병원",
+            "eng": "Gangneung Asan Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-610-3114",
+            "address": "(25440) 강원도 강릉시 사천면 방동길 38 (사천면)"
+          },
+          {
+            "kor": "의산의료재단강릉고려병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "033-642-1988",
+            "address": "(25552) 강원도 강릉시 옥가로 30 30"
+          },
+          {
+            "kor": "의료법인 동해동인병원",
+            "eng": "Donghea Dongin Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-530-0114",
+            "address": "(25751) 강원도 동해시 하평로 26 (평릉동)"
+          },
+          {
+            "kor": "강원도 삼척의료원",
+            "eng": "Samcheok Medical Center",
+            "type": "종합병원",
+            "rep-phone": "033-572-1141",
+            "address": "(0) 강원도 삼척시 오십천로 418- (남양동)"
+          },
+          {
+            "kor": "강원도속초의료원",
+            "eng": "Sokcho Medical Center",
+            "type": "종합병원",
+            "rep-phone": "033-630-6014",
+            "address": "(24821) 강원도 속초시 영랑호반길 3 (영랑동)"
+          },
+          {
+            "kor": "속초보광병원",
+            "eng": "Sokcho Bokwang Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-639-8632",
+            "address": "(24853) 강원도 속초시 중앙로 11 11"
+          },
+          {
+            "kor": "강원도 영월의료원",
+            "eng": "Youngwol Medical Center",
+            "type": "종합병원",
+            "rep-phone": "033-370-9149",
+            "address": "(26234) 강원도 영월군 영월읍 중앙1로 59 ()"
+          },
+          {
+            "kor": "강원도 원주의료원",
+            "eng": "(?) Wonju Medical Center",
+            "type": "종합병원",
+            "rep-phone": "033-760-4605",
+            "address": "(26448) 강원도 원주시 서원대로 387 (개운동)"
+          },
+          {
+            "kor": "연세대학교 원주세브란스기독병원",
+            "eng": "Wonju Severance Christian Hospital",
+            "type": "상급종합",
+            "rep-phone": "033-741-1043",
+            "address": "(26426) 강원도 원주시 일산로 20 (일산동)"
+          },
+          {
+            "kor": "강원대학교병원",
+            "eng": "Kangwon National University Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-258-2000",
+            "address": "(24289) 강원도 춘천시 백령로 156 (효자동)"
+          },
+          {
+            "kor": "한림대학교부속 춘천성심병원",
+            "eng": "Hallym University Chuncheon Sacred Heart Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-240-5000",
+            "address": "(24253) 강원도 춘천시 삭주로 77 (교동)"
+          },
+          {
+            "kor": "근로복지공단 태백병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "033-580-3126",
+            "address": "(26052) 강원도 태백시 보드미길 8 (장성동)"
+          },
+          {
+            "kor": "홍천아산병원",
+            "eng": "Hongcheon Asan Hospital",
+            "type": "종합병원",
+            "rep-phone": "033-430-5104",
+            "address": "(25131) 강원도 홍천군 홍천읍 산림공원1길 17-17 17"
+          },
+          {
+            "kor": "의료법인명지의료재단명지병원",
+            "eng": "Myungju Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-810-5114",
+            "address": "(10475) 경기도 고양시 덕양구 화수로14번길 55 (화정동)"
+          },
+          {
+            "kor": "동국대학교일산불교병원",
+            "eng": "Dongguk University Ilsan Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-961-7000",
+            "address": "(10326) \"경기도 고양시 일산동구 동국로 27 (식사동"
+          },
+          {
+            "kor": "국민건강보험공단일산병원",
+            "eng": "National Health Insurance Service Ilsan Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-900-0114",
+            "address": "(10444) \"경기도 고양시 일산동구 일산로 100 (백석동"
+          },
+          {
+            "kor": "국립암센터",
+            "eng": "National Cancer Center",
+            "type": "종합병원",
+            "rep-phone": "031-920-0114",
+            "address": "(10408) 경기도 고양시 일산동구 일산로 323 (마두동)"
+          },
+          {
+            "kor": "인제대학교일산백병원",
+            "eng": "Inje University Ilsan Paik Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-910-7114",
+            "address": "(10380) 경기도 고양시 일산서구 주화로 170 (대화동)"
+          },
+          {
+            "kor": "광명성애병원",
+            "eng": "Gwangmyeong Sungae Hospital",
+            "type": "종합병원",
+            "rep-phone": "02-2680-7114",
+            "address": "(14241) \"경기도 광명시 디지털로 36 (철산동"
+          },
+          {
+            "kor": "참조은병원",
+            "eng": "Chamjoeun Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-767-7575",
+            "address": "(12756) 경기도 광주시 광주대로 45 (경안동)"
+          },
+          {
+            "kor": "한양대학교구리병원",
+            "eng": "Hanyang University Guri Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-1644-9118",
+            "address": "(11923) 경기도 구리시 경춘로 153 (교문동)"
+          },
+          {
+            "kor": "지샘병원",
+            "eng": "G Sam Medical Center",
+            "type": "종합병원",
+            "rep-phone": "031-389-3000",
+            "address": "(15839) \"경기도 군포시 군포로 591 (당동"
+          },
+          {
+            "kor": "원광대학교의과대학산본병원",
+            "eng": "Wonkwang University Sanbon Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-390-2300",
+            "address": "(15865) 경기도 군포시 산본로 321 (산본동)"
+          },
+          {
+            "kor": "의료법인우리의료재단김포우리병원",
+            "eng": "Gimpo Woori Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-999-1000",
+            "address": "(10099) 경기도 김포시 감암로 11 (걸포동)"
+          },
+          {
+            "kor": "의료법인인봉의료재단뉴고려병원",
+            "eng": "New Korea Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-998-8129",
+            "address": "(415060) 경기도 김포시 김포한강3로 283 (장기동)"
+          },
+          {
+            "kor": "남양주 한양병원",
+            "eng": "Namyangju Hanyang General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-510-0114",
+            "address": "(12048) 경기도 남양주시 오남읍 양지로 47-55 (오남읍)"
+          },
+          {
+            "kor": "남양주우리병원",
+            "eng": "Namyangju Woori General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-570-1000",
+            "address": "(12045) 경기도 남양주시 오남읍 진건오남로797번길 9 ()"
+          },
+          {
+            "kor": "현대병원",
+            "eng": "Namyangju Hyundae General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-574-9118",
+            "address": "(12013) 경기도 남양주시 진접읍 봉현로 21 ()"
+          },
+          {
+            "kor": "부천대성병원",
+            "eng": "Bucheon Daesung Medical Center",
+            "type": "종합병원",
+            "rep-phone": "032-652-0141",
+            "address": "(14577) \"경기도 부천시 부천로 91 (심곡동"
+          },
+          {
+            "kor": "가톨릭대학교부천성모병원",
+            "eng": "The Catholic University of Korea Bucheon St.Mary's Hospital",
+            "type": "종합병원",
+            "rep-phone": "032-1577-0675",
+            "address": "(14647) 경기도 부천시 소사로 327 (소사동)"
+          },
+          {
+            "kor": "학교법인동은학원순천향대학교부속부천병원",
+            "eng": "SoonChunHyang University Bucheon Hospital",
+            "type": "상급종합",
+            "rep-phone": "032-621-5114",
+            "address": "(14584) 경기도 부천시 조마루로 170 (중동)"
+          },
+          {
+            "kor": "의료법인대인의료재단 다니엘종합병원",
+            "eng": "Daniel Medical Center",
+            "type": "종합병원",
+            "rep-phone": "032-670-0001",
+            "address": "(14513) 경기도 부천시 중동로 361 (약대동)"
+          },
+          {
+            "kor": "의료법인혜원의료재단세종병원",
+            "eng": "Sejong Hospital",
+            "type": "종합병원",
+            "rep-phone": "032-340-1114",
+            "address": "(14754) 경기도 부천시 호현로489번길 28 (소사본동)"
+          },
+          {
+            "kor": "분당서울대학교병원",
+            "eng": "Seoul National University Bundang Hospital",
+            "type": "상급종합",
+            "rep-phone": "787-2114",
+            "address": "(13620) \"경기도 성남시 분당구 구미로173번길 82 (구미동"
+          },
+          {
+            "kor": "국군수도병원",
+            "eng": "Armed Forces Capital Hospital",
+            "type": "종합병원",
+            "rep-phone": "1688-9151",
+            "address": "(13574) 경기도 성남시 분당구 새마을로177번길 81 (율동)"
+          },
+          {
+            "kor": "대진의료재단 분당제생병원",
+            "eng": "Bundang Jesaeng Hospital",
+            "type": "종합병원",
+            "rep-phone": "779-0114",
+            "address": "(13590) 경기도 성남시 분당구 서현로180번길 20 (서현동)"
+          },
+          {
+            "kor": "차의과학대학교분당차병원",
+            "eng": "CHA Bundang Medical Center",
+            "type": "종합병원",
+            "rep-phone": "031-780-5000",
+            "address": "(13496) 경기도 성남시 분당구 야탑로 59 (야탑동)"
+          },
+          {
+            "kor": "순천의료재단 정병원",
+            "eng": "Chung General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-757-8900",
+            "address": "(13316) 경기도 성남시 수정구 수정로 76 (수진동)"
+          },
+          {
+            "kor": "성남중앙병원",
+            "eng": "Seongnam Central Hosptal",
+            "type": "종합병원",
+            "rep-phone": "031-743-3000",
+            "address": "(13161) 경기도 성남시 중원구 산성대로476번길 12 (금광동)"
+          },
+          {
+            "kor": "아주대학교병원",
+            "eng": "Ajou University Hospital",
+            "type": "상급종합",
+            "rep-phone": "031-219-5114",
+            "address": "(16499) 경기도 수원시 영통구 월드컵로 164 (원천동)"
+          },
+          {
+            "kor": "경기도의료원 수원병원",
+            "eng": "Gyunggi Provincial Medical Center Suwon Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-888-0114",
+            "address": "(16316) 경기도 수원시 장안구 수성로245번길 69 (정자동)"
+          },
+          {
+            "kor": "의료법인녹산의료재단동수원병원",
+            "eng": "Donsuwon General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-210-0114",
+            "address": "(16494) 경기도 수원시 팔달구 중부대로 165 (우만동)"
+          },
+          {
+            "kor": "가톨릭대학교성빈센트병원",
+            "eng": "The Gatholic University of Korea St.Vincent's Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-1577-8588",
+            "address": "(16247) 경기도 수원시 팔달구 중부대로 93 (지동)"
+          },
+          {
+            "kor": "의료법인 석경의료재단 센트럴병원",
+            "eng": "(?)",
+            "type": "종합병원",
+            "rep-phone": "031-8041-3000",
+            "address": "(15079) 경기도 시흥시 공단1대로 237 (정왕동)"
+          },
+          {
+            "kor": "의료법인 녹향의료재단 신천연합병원",
+            "eng": "Union Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-310-6300",
+            "address": "(14905) 경기도 시흥시 복지로 57 (대야동)"
+          },
+          {
+            "kor": "시화병원",
+            "eng": "Shihwa Medical Center",
+            "type": "종합병원",
+            "rep-phone": "031-432-2600",
+            "address": "(15040) 경기도 시흥시 옥구천서로 337 (정왕동)"
+          },
+          {
+            "kor": "대아의료재단한도병원",
+            "eng": "Hando Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-8040-1114",
+            "address": "(15367) 경기도 안산시 단원구 선부광장로 103 (선부동)"
+          },
+          {
+            "kor": "단원병원",
+            "eng": "Danwon Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-8040-6600",
+            "address": "(15457) 경기도 안산시 단원구 원포공원1로 20 (초지동)"
+          },
+          {
+            "kor": "고려대학교의과대학부속안산병원",
+            "eng": "Korea University Ansan Hospital",
+            "type": "상급종합",
+            "rep-phone": "031-412-5653",
+            "address": "(15355) 경기도 안산시 단원구 적금로 123 (고잔동)"
+          },
+          {
+            "kor": "근로복지공단안산병원",
+            "eng": "Korea Workers' Compensation & Welfare Servcie Ansan Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-500-1114",
+            "address": "(15324) 경기도 안산시 상록구 구룡로 87 (일동)"
+          },
+          {
+            "kor": "경기도의료원 안성병원",
+            "eng": "Gyeonggi Provincial Medical Center Ansung Hospital",
+            "type": "종합병원",
+            "rep-phone": "674-7520",
+            "address": "(17572) 경기도 안성시 고수2로 17 (당왕동)"
+          },
+          {
+            "kor": "한성병원",
+            "eng": "(?)",
+            "type": "종합병원",
+            "rep-phone": "031-452-0011",
+            "address": "(14120) 경기도 안양시 동안구 경수대로 525 (호계동)"
+          },
+          {
+            "kor": "한림대학교성심병원",
+            "eng": "Hallym University Sacred Heart Hospital",
+            "type": "상급종합",
+            "rep-phone": "031-380-1500",
+            "address": "(14068) 경기도 안양시 동안구 관평로170번길 22 (평촌동)"
+          },
+          {
+            "kor": "인산의료재단 메트로병원",
+            "eng": "Metro Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-467-9000",
+            "address": "(14096) \"경기도 안양시 만안구 명학로33번길 8 (안양동"
+          },
+          {
+            "kor": "효산의료재단 안양샘병원",
+            "eng": "Anyang SAM Hosptial",
+            "type": "종합병원",
+            "rep-phone": "031-467-9391",
+            "address": "(14030) \"경기도 안양시 만안구 삼덕로 9 (안양동"
+          },
+          {
+            "kor": "오산한국병원",
+            "eng": "Osan Hankook Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-379-8300",
+            "address": "(18144) 경기도 오산시 밀머리로1번길 16 (원동)"
+          },
+          {
+            "kor": "다나국제병원",
+            "eng": "(?)",
+            "type": "종합병원",
+            "rep-phone": "1544-5355",
+            "address": "(18136) 경기도 오산시 오산로 307 (오산동)"
+          },
+          {
+            "kor": "강남병원",
+            "eng": "Kangnam General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-300-0174",
+            "address": "(17064) 경기도 용인시 기흥구 중부대로 411 (신갈동)"
+          },
+          {
+            "kor": "연세대학교 의과대학 용인세브란스종합병원",
+            "eng": "Yongin Severance Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-331-8771",
+            "address": "(17046) 경기도 용인시 처인구 금학로 225 (역북동)"
+          },
+          {
+            "kor": "(의)영문의료재단 다보스병원",
+            "eng": "Davos Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-8021-2000",
+            "address": "(17063) 경기도 용인시 처인구 백옥대로1082번길 1082-18 (김량장동)"
+          },
+          {
+            "kor": "의료법인영동의료재단의정부백병원",
+            "eng": "Uijungbu Paik General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-856-8111",
+            "address": "(11778) 경기도 의정부시 금신로 322 (신곡동)"
+          },
+          {
+            "kor": "가톨릭대학교의정부성모병원",
+            "eng": "The Catholic University of Korea Uijeongbu St.Mary's Hospital",
+            "type": "종합병원",
+            "rep-phone": "1661-7500",
+            "address": "(11765) 경기도 의정부시 천보로 271 (금오동)"
+          },
+          {
+            "kor": "경기도의료원의정부병원",
+            "eng": "Gyeonggi Provincial Medical Center Uijeongbu Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-828-5000",
+            "address": "(11671) 경기도 의정부시 흥선로 142 (의정부동)"
+          },
+          {
+            "kor": "경기도의료원이천병원",
+            "eng": "Gyeonggi Provincial Medical Center Icheon Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-639-4800",
+            "address": "(17366) 경기도 이천시 경충대로 2742 (관고동)"
+          },
+          {
+            "kor": "경기도의료원파주병원",
+            "eng": "Gyeonggi Provincial Medical Center Paju Hospital",
+            "type": "종합병원",
+            "rep-phone": "940-9100",
+            "address": "(413826) 경기도 파주시 중앙로 207 (금촌동)"
+          },
+          {
+            "kor": "의료법인 갈렌의료재단 박병원",
+            "eng": "Park Medical Center(Goodspine Hospital)",
+            "type": "종합병원",
+            "rep-phone": "031-666-2600",
+            "address": "(17784) 경기도 평택시 송탄로 33 (장당동)"
+          },
+          {
+            "kor": "의료법인대정의료재단평택병원",
+            "eng": "(?)",
+            "type": "종합병원",
+            "rep-phone": "031-615-9800",
+            "address": "(17739) 경기도 평택시 정암로 78-14 (이충동)"
+          },
+          {
+            "kor": "의료법인백송의료재단 굿모닝병원",
+            "eng": "Good Morning Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-652-2981",
+            "address": "(450833) 경기도 평택시 중앙로 338-338 (합정동)"
+          },
+          {
+            "kor": "의료법인 박애의료재단 박애병원",
+            "eng": "Bagae Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-652-2121",
+            "address": "(17909) 경기도 평택시 평택2로20번길 3 (평택동)"
+          },
+          {
+            "kor": "의료법인 양진의료재단 평택성모병원",
+            "eng": "Pyeongtaek St.Mary's Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-1800-8800",
+            "address": "(17825) 경기도 평택시 평택로 284 (세교동)"
+          },
+          {
+            "kor": "의료법인일심의료재단우리병원",
+            "eng": "(?)",
+            "type": "종합병원",
+            "rep-phone": "031-542-0222",
+            "address": "(11174) 경기도 포천시 소흘읍 호국로 661 661"
+          },
+          {
+            "kor": "경기도의료원포천병원",
+            "eng": "Gyeonggi Provincial Medical Center Pocheon Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-539-9114",
+            "address": "(11142) 경기도 포천시 포천로 1648 (신읍동)"
+          },
+          {
+            "kor": "한림대학교동탄성심병원",
+            "eng": "Hallym University Dongtan Sacred Heart Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-8086-3000",
+            "address": "(18450) 경기도 화성시 큰재봉길 7 (석우동)"
+          },
+          {
+            "kor": "의료법인 은혜와감사의료재단 화성중앙종합병원",
+            "eng": "Hwaseong Jungang General Hospital",
+            "type": "종합병원",
+            "rep-phone": "031-352-8114",
+            "address": "(18592) 경기도 화성시 향남읍 발안로 5 ()"
+          },
+          {
+            "kor": "의료법인 거붕 백병원",
+            "eng": "Great Boss Foundation Baik Medical Center",
+            "type": "종합병원",
+            "rep-phone": "055-635-2187",
+            "address": "(53290) 경상남도 거제시 계룡로5길 14 (상동동)"
+          },
+          {
+            "kor": "의료법인 대우의료재단대우병원",
+            "eng": "Daewoo General Hospital",
+            "type": "종합병원",
+            "rep-phone": "055-680-8114",
+            "address": "(53317) 경상남도 거제시 두모길 16-16 (두모동)"
+          },
+          {
+            "kor": "의료법인 성념의료재단맑은샘병원",
+            "eng": "Clear Well Hospital",
+            "type": "종합병원",
+            "rep-phone": "055-731-1240",
+            "address": "(53209) 경상남도 거제시 연초면 거제대로 4477 ()"
+          },
+          {
+            "kor": "의료법인 환명의료재단 조은금강병원",
+            "eng": "Joeun Gumgang Hospital",
+            "type": "종합병원",
+            "rep-phone": "055-330-0300",
+            "address": "(50880) 경상남도 김해시 김해대로 1814-37 (삼계동)"
+          },
+          {
+            "kor": "의료법인 보원의료재단 김해중앙병원",
+            "eng": "Kyunghee University Medical Center E&C Jungang General Hospital",
+            "type": "종합병원",
+            "rep-phone": "055-330-6000",
+            "address": "(50960) 경상남도 김해시 분성로 94-8 (외동)"
+          },
+          {
+            "kor": "의료법인갑을의료재단갑을장유병원",
+            "eng": "(?)",
+            "type": "종합병원",
+            "rep-phone": "055-310-6000",
+            "address": "(50971) 경상남도 김해시 장유로 167-13 (부곡동)"
+          },
+          {
+            "kor": "김해복음병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-330-8888",
+            "address": "(50923) 경상남도 김해시 활천로 33 (삼정동)"
+          },
+          {
+            "kor": "의료법인 영남병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-354-8102",
+            "address": "(50424) 경상남도 밀양시 밀양대로 1959 (내이동)"
+          },
+          {
+            "kor": "양산부산대학교병원",
+            "eng": "Pusan National University Yangsan Hospital",
+            "type": "상급종합",
+            "rep-phone": "055-360-1000",
+            "address": "(50612) 경상남도 양산시 물금읍 금오로 20 ()"
+          },
+          {
+            "kor": "의료법인 보원의료재단 웅상중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "1600-7582",
+            "address": "(50536) 경상남도 양산시 서창로 59 (명동)"
+          },
+          {
+            "kor": "베데스다병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-384-9901",
+            "address": "(50576) 경상남도 양산시 신기로 28 (신기동)"
+          },
+          {
+            "kor": "경상대학교병원",
+            "eng": "Gyeongsang National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "055-750-8000",
+            "address": "(52727) 경상남도 진주시 강남로 79 (칠암동)"
+          },
+          {
+            "kor": "진주고려병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-751-2500",
+            "address": "(52726) \"경상남도 진주시 동진로 2 (칠암동"
+          },
+          {
+            "kor": "제일병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-750-7123",
+            "address": "(52709) 경상남도 진주시 진주대로 885 (강남동)"
+          },
+          {
+            "kor": "경상남도마산의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-249-1000",
+            "address": "(51736) 경상남도 창원시 마산합포구 3·15대로 231 (중앙동3가)"
+          },
+          {
+            "kor": "의료법인석영의료재단창원제일종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-223-9000",
+            "address": "(51732) 경상남도 창원시 마산합포구 3·15대로 238 (중앙동3가)"
+          },
+          {
+            "kor": "의료법인합포의료재단MH연세병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-243-0100",
+            "address": "(51740) \"경상남도 창원시 마산합포구 3·15대로 76 (월남동2가"
+          },
+          {
+            "kor": "동마산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-290-5114",
+            "address": "(51303) \"경상남도 창원시 마산회원구 3·15대로 681 (석전동"
+          },
+          {
+            "kor": "의료법인청아의료재단청아병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-230-1500",
+            "address": "(51230) 경상남도 창원시 마산회원구 내서읍 광려천서로 67 (청아병원)"
+          },
+          {
+            "kor": "학교법인성균관대학삼성창원병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-233-5114",
+            "address": "(51353) \"경상남도 창원시 마산회원구 팔용로 158-158 (합성동"
+          },
+          {
+            "kor": "창원경상대학교병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-214-1106",
+            "address": "(51472) \"경상남도 창원시 성산구 삼정자로 11 (성주동"
+          },
+          {
+            "kor": "한마음창원병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-267-2000",
+            "address": "(51497) 경상남도 창원시 성산구 원이대로682번길 21 (상남동)"
+          },
+          {
+            "kor": "근로복지공단 창원병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-282-5111",
+            "address": "(51524) 경상남도 창원시 성산구 창원대로 721 (중앙동)"
+          },
+          {
+            "kor": "재단법인대구포교성베네딕도수녀회창원파티마병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-270-1000",
+            "address": "(51394) 경상남도 창원시 의창구 창이대로 45-45 (명서동)"
+          },
+          {
+            "kor": "진해연세병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "055-548-7700",
+            "address": "(51659) 경상남도 창원시 진해구 해원로32번길 13 (이동)"
+          },
+          {
+            "kor": "의)근원의료재단경산중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-715-0100",
+            "address": "(38646) 경상북도 경산시 경안로 11 (백천동)"
+          },
+          {
+            "kor": "동국대학교의과대학경주병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-748-9300",
+            "address": "(38067) 경상북도 경주시 동대로 87 (석장동)"
+          },
+          {
+            "kor": "학교법인동은학원순천향대학교구미병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-468-9544",
+            "address": "(39371) 경상북도 구미시 1공단로 179 (공단동)"
+          },
+          {
+            "kor": "차의과학대학교부속구미차병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-450-9700",
+            "address": "(39295) 경상북도 구미시 신시로10길 12 12"
+          },
+          {
+            "kor": "구미강동병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-453-7575",
+            "address": "(39399) 경상북도 구미시 인동20길 46 46"
+          },
+          {
+            "kor": "경상북도김천의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-432-8901",
+            "address": "(39579) 경상북도 김천시 모암길 24 (모암동)"
+          },
+          {
+            "kor": "의료법인덕산의료재단김천제일병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-420-9300",
+            "address": "(39544) 경상북도 김천시 신음1길 12 12"
+          },
+          {
+            "kor": "의료법인동춘의료재단문경제일병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-550-7700",
+            "address": "(36986) 경상북도 문경시 당교3길 25 (모전동)"
+          },
+          {
+            "kor": "의료법인삼백의료재단상주성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-532-5001",
+            "address": "(37179) 경상북도 상주시 냉림서성길 7 7"
+          },
+          {
+            "kor": "상주적십자병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-534-3501",
+            "address": "(37199) 경상북도 상주시 상서문로 53 (남성동)"
+          },
+          {
+            "kor": "안동성소병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-850-8114",
+            "address": "(36690) 경상북도 안동시 서동문로 99 (금곡동)"
+          },
+          {
+            "kor": "의료법인안동병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-840-1004",
+            "address": "(36743) 경상북도 안동시 앙실로 11 (수상동)"
+          },
+          {
+            "kor": "경상북도안동의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-850-6000",
+            "address": "(36694) 경상북도 안동시 태사2길 55 (북문동)"
+          },
+          {
+            "kor": "영남대학교의과대학부속영천병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-338-9000",
+            "address": "(38840) 경상북도 영천시 오수1길 10 10"
+          },
+          {
+            "kor": "포항성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-272-0151",
+            "address": "(37661) 경상북도 포항시 남구 대잠동길 17 (대잠동)"
+          },
+          {
+            "kor": "의료법인한성재단포항세명기독병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-275-0005",
+            "address": "(37816) 경상북도 포항시 남구 포스코대로 351 (대도동)"
+          },
+          {
+            "kor": "에스포항병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-613-7350",
+            "address": "(37659) 경상북도 포항시 남구 희망대로 352 (이동)"
+          },
+          {
+            "kor": "경상북도포항의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "054-247-0551",
+            "address": "(37688) 경상북도 포항시 북구 용흥로 36 (용흥동)"
+          },
+          {
+            "kor": "신가병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-610-8000",
+            "address": "(62316) 광주광역시 광산구 목련로 316 (신가동)"
+          },
+          {
+            "kor": "KS병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-975-9000",
+            "address": "(62248) 광주광역시 광산구 왕버들로 220 (수완동)"
+          },
+          {
+            "kor": "하남성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-958-1283",
+            "address": "(62338) 광주광역시 광산구 용아로 259 (산정동)"
+          },
+          {
+            "kor": "광주수완병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-954-1111",
+            "address": "(62247) 광주광역시 광산구 임방울대로 370 (수완동)"
+          },
+          {
+            "kor": "광주보훈병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-602-6000",
+            "address": "(62284) 광주광역시 광산구 첨단월봉로 99 (산월동)"
+          },
+          {
+            "kor": "첨단종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-601-8000",
+            "address": "(62274) 광주광역시 광산구 첨단중앙로170번길 59 (쌍암동)"
+          },
+          {
+            "kor": "동아병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-650-2500",
+            "address": "(61656) 광주광역시 남구 대남대로 238 (백운동)"
+          },
+          {
+            "kor": "광주씨티병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-460-7000",
+            "address": "(61710) 광주광역시 남구 서문대로654번길 5 (진월동)"
+          },
+          {
+            "kor": "광주기독병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-650-5000",
+            "address": "(61661) 광주광역시 남구 양림로 37 (양림동)"
+          },
+          {
+            "kor": "전남대학교병원",
+            "eng": "Chonnam National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "062-1899-0000",
+            "address": "(61469) 광주광역시 동구 제봉로 42 (학동)"
+          },
+          {
+            "kor": "서남대학교병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-224-0671",
+            "address": "(61488) 광주광역시 동구 천변우로 415 (불로동)"
+          },
+          {
+            "kor": "조선대학교병원",
+            "eng": "Chosun University Hospital",
+            "type": "상급종합",
+            "rep-phone": "062-220-3321",
+            "address": "(61453) 광주광역시 동구 필문대로 365 (학동)"
+          },
+          {
+            "kor": "광주병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-260-7106",
+            "address": "(61171) 광주광역시 북구 면앙로139번길 51 (두암동)"
+          },
+          {
+            "kor": "운암한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-608-8000",
+            "address": "(61266) 광주광역시 북구 북문대로 191 (운암동)"
+          },
+          {
+            "kor": "광주현대병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-570-0114",
+            "address": "(61063) 광주광역시 북구 설죽로 291 (용봉동)"
+          },
+          {
+            "kor": "광주일곡병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-608-7000",
+            "address": "(61040) 광주광역시 북구 양일로 309 (일곡동)"
+          },
+          {
+            "kor": "광주희망병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-608-6000",
+            "address": "(61019) 광주광역시 북구 하서로 429 (용두동)"
+          },
+          {
+            "kor": "서광병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-600-8000",
+            "address": "(62007) 광주광역시 서구 금화로59번길 6 (금호동)"
+          },
+          {
+            "kor": "상무병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-600-7000",
+            "address": "(61948) 광주광역시 서구 상무자유로 181-7 (치평동)"
+          },
+          {
+            "kor": "서남대학교남광병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-371-0061",
+            "address": "(61998) 광주광역시 서구 신기길 18 (마륵동)"
+          },
+          {
+            "kor": "광주한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-380-3000",
+            "address": "(61967) 광주광역시 서구 월드컵4강로 223 (쌍촌동)"
+          },
+          {
+            "kor": "미래로21병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "062-450-1000",
+            "address": "(62045) 광주광역시 서구 화운로 1 (화정동)"
+          },
+          {
+            "kor": "대구가톨릭대학교병원",
+            "eng": "Daegu Catholic University Medical Center",
+            "type": "상급종합",
+            "rep-phone": "053-650-3000",
+            "address": "(42472) 대구광역시 남구 두류공원로17길 33 (대명동)"
+          },
+          {
+            "kor": "영남대학교병원",
+            "eng": "Yeungnam University Medical Center",
+            "type": "상급종합",
+            "rep-phone": "053-623-8001",
+            "address": "(42415) 대구광역시 남구 현충로 170 (대명동)"
+          },
+          {
+            "kor": "의료법인구의료재단 구병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-560-9114",
+            "address": "(42644) 대구광역시 달서구 감삼북길 141 (감삼동)"
+          },
+          {
+            "kor": "(비영리특수법인)한국보훈복지의료공단 대구보훈병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-630-7000",
+            "address": "(42835) 대구광역시 달서구 월곡로 60 (도원동)"
+          },
+          {
+            "kor": "대구파티마병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "1688-7770",
+            "address": "(41199) 대구광역시 동구 아양로 99 (신암동)"
+          },
+          {
+            "kor": "대구가톨릭대학교 칠곡가톨릭병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-320-2500",
+            "address": "(41438) 대구광역시 북구 칠곡중앙대로 440 (읍내동)"
+          },
+          {
+            "kor": "칠곡경북대학교병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-200-2000",
+            "address": "(41404) 대구광역시 북구 호국로 807-807 (학정동)"
+          },
+          {
+            "kor": "대구의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-560-7575",
+            "address": "(41845) 대구광역시 서구 평리로 157 (중리동)"
+          },
+          {
+            "kor": "(재)미리내천주성삼성직수도회천주성삼병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-790-1000",
+            "address": "(42274) \"대구광역시 수성구 달구벌대로 3190 (신매동"
+          },
+          {
+            "kor": "의료법인 운경의료재단 곽병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "053-252-2401",
+            "address": "(41919) 대구광역시 중구 국채보상로 531 (수동)"
+          },
+          {
+            "kor": "계명대학교동산병원",
+            "eng": "Keimyung University Dongsan Medical Center",
+            "type": "상급종합",
+            "rep-phone": "250-7114",
+            "address": "(41931) \"대구광역시 중구 달성로 56 (동산동"
+          },
+          {
+            "kor": "경북대학교병원",
+            "eng": "Kyungpook National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "053-422-1141",
+            "address": "(41944) \"대구광역시 중구 동덕로 130 (삼덕동2가"
+          },
+          {
+            "kor": "근로복지공단 대전병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-670-5114",
+            "address": "(34384) 대전광역시 대덕구 계족로 637 (법동)"
+          },
+          {
+            "kor": "대전보훈병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-939-0111",
+            "address": "(34314) 대전광역시 대덕구 대청로82번길 147 147"
+          },
+          {
+            "kor": "대전한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-606-1000",
+            "address": "(34572) 대전광역시 동구 동서대로 1672 (성남동)"
+          },
+          {
+            "kor": "대청병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-1899-6075",
+            "address": "(35403) 대전광역시 서구 계백로 1322 (정림동)"
+          },
+          {
+            "kor": "학교법인건양학원 건양대학교병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-600-9999",
+            "address": "(35365) 대전광역시 서구 관저동로 158 (관저동)"
+          },
+          {
+            "kor": "학교법인 을지학원 을지대학교병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-611-3000",
+            "address": "(35233) 대전광역시 서구 둔산서로 95 (둔산동)"
+          },
+          {
+            "kor": "의료법인영훈의료재단 유성선병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-609-1000",
+            "address": "(34084) 대전광역시 유성구 북유성대로 93 (지족동)"
+          },
+          {
+            "kor": "학교법인가톨릭학원 가톨릭대학교 대전성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-252-6807",
+            "address": "(34943) 대전광역시 중구 대흥로 64 (대흥동)"
+          },
+          {
+            "kor": "의료법인 영훈의료재단 대전선병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "042-220-8114",
+            "address": "(34811) 대전광역시 중구 목중로 29 (목동)"
+          },
+          {
+            "kor": "충남대학교병원",
+            "eng": "Chungnam National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "042-280-7114",
+            "address": "(35015) 대전광역시 중구 문화로 282 (대사동)"
+          },
+          {
+            "kor": "의료법인기독교한국침례회의료재단왈레스기념 침례병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-580-2000",
+            "address": "(46214) 부산광역시 금정구 금단로 200 (남산동)"
+          },
+          {
+            "kor": "동남권원자력의학원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-720-5114",
+            "address": "(46033) 부산광역시 기장군 장안읍 좌동길 40 ()"
+          },
+          {
+            "kor": "부산성모병원(재단법인 천주교부산교구유지재단)",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-933-7000",
+            "address": "(48575) 부산광역시 남구 용호로232번길 25-14 (용호동)"
+          },
+          {
+            "kor": "좋은문화병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-644-2002",
+            "address": "(48735) 부산광역시 동구 범일로 119 (범일동)"
+          },
+          {
+            "kor": "재단법인한호기독교선교회 일신기독병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "630-0300",
+            "address": "(48724) 부산광역시 동구 정공단로 27 (좌천동)"
+          },
+          {
+            "kor": "의료법인정화의료재단 김원묵기념봉생병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-664-4000",
+            "address": "(48775) \"부산광역시 동구 중앙대로 401 (좌천동"
+          },
+          {
+            "kor": "동래봉생병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-531-6000",
+            "address": "(47889) 부산광역시 동래구 안연로109번길 27 (안락동)"
+          },
+          {
+            "kor": "대동병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-554-1233",
+            "address": "(47737) 부산광역시 동래구 충렬대로 187 (명륜동)"
+          },
+          {
+            "kor": "의료법인 광혜의료재단광혜병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-503-2111",
+            "address": "(47821) \"부산광역시 동래구 충렬대로 96 (온천동"
+          },
+          {
+            "kor": "의료법인정선의료재단 온종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-607-0114",
+            "address": "(47261) 부산광역시 부산진구 가야대로 721 지하2~지상11층 (당감동)"
+          },
+          {
+            "kor": "(학교법인)인제대학교부산백병원",
+            "eng": "Inje University Busan Paik Hospital",
+            "type": "상급종합",
+            "rep-phone": "051-890-6212",
+            "address": "(47392) 부산광역시 부산진구 복지로 75 지하2~지상10층 (개금동)"
+          },
+          {
+            "kor": "학교법인)동의병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-850-8509",
+            "address": "(47227) \"부산광역시 부산진구 양정로 62 지하1층~지상8층 (양정동"
+          },
+          {
+            "kor": "학교법인 춘해병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-638-8000",
+            "address": "(614021) 부산광역시 부산진구 중앙대로 605-605 지상1층~지상9층 (범천동)"
+          },
+          {
+            "kor": "구포성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-330-2001",
+            "address": "(46581) 부산광역시 북구 낙동대로 1786 (구포동)"
+          },
+          {
+            "kor": "의료법인 인당의료재단 부민병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-330-3000",
+            "address": "(46555) 부산광역시 북구 만덕대로 59 (덕천동)"
+          },
+          {
+            "kor": "의료법인은성의료재단좋은삼선병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-322-0900",
+            "address": "(47007) 부산광역시 사상구 가야대로 326 (주례동)"
+          },
+          {
+            "kor": "한국보훈복지의료공단부산보훈병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-601-6000",
+            "address": "(46996) 부산광역시 사상구 백양대로 420 (주례동)"
+          },
+          {
+            "kor": "고신대학교복음병원",
+            "eng": "Kosin University Gospel Hospital",
+            "type": "상급종합",
+            "rep-phone": "990-6114",
+            "address": "(49267) 부산광역시 서구 감천로 262 (암남동)"
+          },
+          {
+            "kor": "부산대학교병원",
+            "eng": "Pusan National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "254-0171",
+            "address": "(49241) 부산광역시 서구 구덕로 179 (아미동1가)"
+          },
+          {
+            "kor": "동아대학교병원",
+            "eng": "Dong-A University Hospital",
+            "type": "상급종합",
+            "rep-phone": "051-240-2400",
+            "address": "(49201) 부산광역시 서구 대신공원로 26 (동대신동3가)"
+          },
+          {
+            "kor": "삼육부산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "242-9751",
+            "address": "(49230) 부산광역시 서구 대티로 170 (서대신동2가)"
+          },
+          {
+            "kor": "의료법인 은성의료재단 좋은강안병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-625-0900",
+            "address": "(48265) 부산광역시 수영구 수영로 493 (남천동)"
+          },
+          {
+            "kor": "비에이치에스한서병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-756-0081",
+            "address": "(48253) 부산광역시 수영구 수영로 615 (광안동)"
+          },
+          {
+            "kor": "부산광역시의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-507-3000",
+            "address": "(47527) \"부산광역시 연제구 월드컵대로 359 (거제동"
+          },
+          {
+            "kor": "해동병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-412-6161",
+            "address": "(49035) 부산광역시 영도구 태종로 133 (봉래동3가)"
+          },
+          {
+            "kor": "영도병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-414-8101",
+            "address": "(49036) 부산광역시 영도구 태종로 85 (대교동2가)"
+          },
+          {
+            "kor": "재단법인천주교부산교구유지재단 메리놀병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-465-8801",
+            "address": "(48972) 부산광역시 중구 중구로 121 (대청동4가)"
+          },
+          {
+            "kor": "의료법인 인당의료재단 해운대부민병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "602-8000",
+            "address": "(48094) 부산광역시 해운대구 해운대로 584 (우동)"
+          },
+          {
+            "kor": "인제대학교해운대백병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "051-797-0114",
+            "address": "(48108) 부산광역시 해운대구 해운대로 875 (좌동)"
+          },
+          {
+            "kor": "차의과학대학교 강남차병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-3468-3000",
+            "address": "(6135) \"서울특별시 강남구 논현로 566 (역삼동"
+          },
+          {
+            "kor": "재단법인베스티안재단베스티안서울병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "3452-7575",
+            "address": "(6208) \"서울특별시 강남구 도곡로 429 (대치동"
+          },
+          {
+            "kor": "연세대학교의과대학강남세브란스병원",
+            "eng": "Gangnam Severance Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-2019-2114",
+            "address": "(6273) 서울특별시 강남구 언주로 211 (도곡동)"
+          },
+          {
+            "kor": "삼성서울병원",
+            "eng": "Samsung Medical Center",
+            "type": "상급종합",
+            "rep-phone": "3410-2114",
+            "address": "(6351) \"서울특별시 강남구 일원로 81 (일원동"
+          },
+          {
+            "kor": "강동경희대학교의대병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-440-7114",
+            "address": "(5278) 서울특별시 강동구 동남로 892 (상일동)"
+          },
+          {
+            "kor": "성심의료재단강동성심병원",
+            "eng": "Kangdong Sacred Heart Hospital",
+            "type": "종합병원",
+            "rep-phone": "02-2224-2114",
+            "address": "(5355) 서울특별시 강동구 성안로 150 (길동)"
+          },
+          {
+            "kor": "한국보훈복지의료공단 중앙보훈병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2225-1111",
+            "address": "(5368) 서울특별시 강동구 진황도로61길 53 (둔촌동)"
+          },
+          {
+            "kor": "의료법인성화의료재단 대한병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-903-3232",
+            "address": "(1081) \"서울특별시 강북구 도봉로 301 (수유동"
+          },
+          {
+            "kor": "미즈메디병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2007-1000",
+            "address": "(7639) 서울특별시 강서구 강서로 295 (내발산동)"
+          },
+          {
+            "kor": "부민병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "1577-7582",
+            "address": "(7590) 서울특별시 강서구 공항대로 389 (등촌동)"
+          },
+          {
+            "kor": "우리들병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2660-7500",
+            "address": "(7505) 서울특별시 강서구 하늘길 70 (과해동)"
+          },
+          {
+            "kor": "강남고려병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-874-8001",
+            "address": "(8735) 서울특별시 관악구 관악로 242 (봉천동)"
+          },
+          {
+            "kor": "에이치플러스 양지병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-1877-8875",
+            "address": "(8779) \"서울특별시 관악구 남부순환로 1636 (신림동"
+          },
+          {
+            "kor": "건국대학교병원",
+            "eng": "Konkuk University Medical Center",
+            "type": "상급종합",
+            "rep-phone": "1588-1533",
+            "address": "(5030) 서울특별시 광진구 능동로 120-1 (화양동)"
+          },
+          {
+            "kor": "혜민병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-453-3131",
+            "address": "(5056) 서울특별시 광진구 자양로 85 (자양동)"
+          },
+          {
+            "kor": "구로성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2067-1500",
+            "address": "(8223) 서울특별시 구로구 경인로 427 (고척동)"
+          },
+          {
+            "kor": "고려대학교의과대학부속구로병원",
+            "eng": "Korea University Guro Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-2626-1114",
+            "address": "(8308) 서울특별시 구로구 구로동로 148 (구로동)"
+          },
+          {
+            "kor": "희명병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-804-0002",
+            "address": "(8626) 서울특별시 금천구 시흥대로 244 (시흥동)"
+          },
+          {
+            "kor": "한국원자력의학원원자력병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-970-2114",
+            "address": "(1812) 서울특별시 노원구 노원로 75 (공릉동)"
+          },
+          {
+            "kor": "인제대학교 상계백병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "950-1114",
+            "address": "(1757) 서울특별시 노원구 동일로 1342 (상계동)"
+          },
+          {
+            "kor": "을지대학교 을지병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-970-8366",
+            "address": "(1830) \"서울특별시 노원구 한글비석로 68 (하계동"
+          },
+          {
+            "kor": "의료법인한전의료재단 한일병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-901-3114",
+            "address": "(1450) 서울특별시 도봉구 우이천로 308 (쌍문동)"
+          },
+          {
+            "kor": "경희대학교병원",
+            "eng": "KyungHee University Medical Cente",
+            "type": "상급종합",
+            "rep-phone": "02-958-8114",
+            "address": "(2447) 서울특별시 동대문구 경희대로 23 (회기동)"
+          },
+          {
+            "kor": "삼육서울병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2244-0191",
+            "address": "(2500) 서울특별시 동대문구 망우로 82 (휘경동)"
+          },
+          {
+            "kor": "서울특별시 동부병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-920-9307",
+            "address": "(2584) 서울특별시 동대문구 무학로 124 (용두동)"
+          },
+          {
+            "kor": "가톨릭대학교성바오로병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-958-2114",
+            "address": "(2559) 서울특별시 동대문구 왕산로 180 (전농동)"
+          },
+          {
+            "kor": "서울성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-966-1616",
+            "address": "(2488) 서울특별시 동대문구 왕산로 259 (청량리동)"
+          },
+          {
+            "kor": "서울특별시보라매병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-870-2114",
+            "address": "(7061) 서울특별시 동작구 보라매로5길 20 (신대방동)"
+          },
+          {
+            "kor": "중앙대학교병원",
+            "eng": "Chung-Ang University Hospital",
+            "type": "상급종합",
+            "rep-phone": "1800-1114",
+            "address": "(6973) 서울특별시 동작구 흑석로 102 (흑석동)"
+          },
+          {
+            "kor": "학교법인연세대학교의과대학세브란스병원",
+            "eng": "Severance Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-2228-0114",
+            "address": "(3722) 서울특별시 서대문구 연세로 50-1 (신촌동)"
+          },
+          {
+            "kor": "의료법인동신의료재단 동신병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-396-9161",
+            "address": "(3653) 서울특별시 서대문구 연희로 272 (홍은동)"
+          },
+          {
+            "kor": "학교법인가톨릭학원가톨릭대학교서울성모병원",
+            "eng": "The Catholic University of Korea St.Mary's Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-1588-1511",
+            "address": "(6591) 서울특별시 서초구 반포대로 222 (반포동)"
+          },
+          {
+            "kor": "한양대학교병원",
+            "eng": "Hanyang University Seoul Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-2290-8114",
+            "address": "(4763) 서울특별시 성동구 왕십리로 222-1 (사근동)"
+          },
+          {
+            "kor": "학교법인 고려중앙학원 고려대학교의과대학부속병원(안암병원)",
+            "eng": "Korea University Anam Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-927-5111",
+            "address": "(2841) 서울특별시 성북구 인촌로 73 (안암동5가)"
+          },
+          {
+            "kor": "경찰병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-3400-1114",
+            "address": "(5715) \"서울특별시 송파구 송이로 123 (가락동"
+          },
+          {
+            "kor": "재단법인아산사회복지재단 서울아산병원",
+            "eng": "Asan Medical Center",
+            "type": "상급종합",
+            "rep-phone": "02-3010-3114",
+            "address": "(5505) \"서울특별시 송파구 올림픽로43길 88 (풍납동"
+          },
+          {
+            "kor": "홍익병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2693-5555",
+            "address": "(7937) \"서울특별시 양천구 목동로 225 (신정동"
+          },
+          {
+            "kor": "이화여자대학교의과대학부속목동병원",
+            "eng": "Ewha Womans University Medical Center",
+            "type": "상급종합",
+            "rep-phone": "02-2650-5114",
+            "address": "(7985) 서울특별시 양천구 안양천로 1071 (목동)"
+          },
+          {
+            "kor": "가톨릭대학교 여의도성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-3779-1114",
+            "address": "(7345) \"서울특별시 영등포구 63로 10 (여의도동"
+          },
+          {
+            "kor": "명지성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-1899-1475",
+            "address": "(7417) \"서울특별시 영등포구 도림로 156 (대림동"
+          },
+          {
+            "kor": "한림대학교 한강성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2639-5012",
+            "address": "(7247) \"서울특별시 영등포구 버드나루로7길 12 (영등포동7가"
+          },
+          {
+            "kor": "대림성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-829-9000",
+            "address": "(7442) \"서울특별시 영등포구 시흥대로 657 (대림동"
+          },
+          {
+            "kor": "한림대학교 강남성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-829-5017",
+            "address": "(7441) \"서울특별시 영등포구 신길로 1 (대림동"
+          },
+          {
+            "kor": "성애의료재단 성애병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-840-7114",
+            "address": "(7354) \"서울특별시 영등포구 여의대방로53길 22 (신길동"
+          },
+          {
+            "kor": "씨엠병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2678-0001",
+            "address": "(7301) \"서울특별시 영등포구 영등포로36길 13 (영등포동4가"
+          },
+          {
+            "kor": "순천향대학교 서울병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-709-9114",
+            "address": "(4401) 서울특별시 용산구 대사관로 59 (한남동)"
+          },
+          {
+            "kor": "의료법인청구성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-353-5511",
+            "address": "(3330) 서울특별시 은평구 통일로 873 (갈현동)"
+          },
+          {
+            "kor": "서울대학교병원",
+            "eng": "Seoul National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-2072-2114",
+            "address": "(3080) 서울특별시 종로구 대학로 101 (연건동)"
+          },
+          {
+            "kor": "강북삼성병원",
+            "eng": "Kangbuk Samsung Hospital",
+            "type": "상급종합",
+            "rep-phone": "02-2001-2001",
+            "address": "(3181) 서울특별시 종로구 새문안로 29 (평동)"
+          },
+          {
+            "kor": "서울적십자병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2002-8000",
+            "address": "(110747) 서울특별시 종로구 새문안로 9-9 (평동)"
+          },
+          {
+            "kor": "세란병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-737-0181",
+            "address": "(3030) 서울특별시 종로구 통일로 256 (무악동)"
+          },
+          {
+            "kor": "인제대학교 서울백병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2270-0114",
+            "address": "(4551) 서울특별시 중구 마른내로 9 (저동2가)"
+          },
+          {
+            "kor": "의료법인 제일의료재단 제일병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2000-7453",
+            "address": "(4619) 서울특별시 중구 서애로1길 17 (묵정동)"
+          },
+          {
+            "kor": "국립중앙의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2260-7114",
+            "address": "(4564) 서울특별시 중구 을지로 245 (을지로6가)"
+          },
+          {
+            "kor": "녹색병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-490-2000",
+            "address": "(2221) 서울특별시 중랑구 사가정로49길 53 (면목동)"
+          },
+          {
+            "kor": "서울특별시서울의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "02-2276-7000",
+            "address": "(2053) 서울특별시 중랑구 신내로 156 (신내동)"
+          },
+          {
+            "kor": "의료법인 정안의료재단 중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "052-226-1100",
+            "address": "(44667) 울산광역시 남구 문수로480번길 10 (신정동)"
+          },
+          {
+            "kor": "의료법인 은성의료재단 좋은삼정병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "052-220-7500",
+            "address": "(44629) 울산광역시 남구 북부순환도로 51 (무거동)"
+          },
+          {
+            "kor": "의료법인혜명심의료재단 울산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "052-259-5000",
+            "address": "(44686) 울산광역시 남구 월평로171번길 13 (신정동)"
+          },
+          {
+            "kor": "학교법인 울산공업학원 울산대학교병원",
+            "eng": "Ulsan University Hospital",
+            "type": "상급종합",
+            "rep-phone": "052-250-7000",
+            "address": "(44033) \"울산광역시 동구 방어진순환도로 877 (전하동"
+          },
+          {
+            "kor": "울산시티병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "052-280-9000",
+            "address": "(44238) 울산광역시 북구 산업로 1007 (연암동)"
+          },
+          {
+            "kor": "서울산보람병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "052-255-7114",
+            "address": "(44948) 울산광역시 울주군 삼남면 중평로 53 ()"
+          },
+          {
+            "kor": "의료법인 동강의료재단 동강병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "052-241-1114",
+            "address": "(44455) 울산광역시 중구 태화로 239 (태화동)"
+          },
+          {
+            "kor": "메디플렉스 세종병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-240-8000",
+            "address": "(21080) 인천광역시 계양구 계양문화로 20 (작전동)"
+          },
+          {
+            "kor": "한림병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-540-9114",
+            "address": "(21079) 인천광역시 계양구 장제로 722 (작전동)"
+          },
+          {
+            "kor": "현대유비스병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-888-7575",
+            "address": "(22173) 인천광역시 남구 독배로 503- (숭의동)"
+          },
+          {
+            "kor": "의료법인 인천사랑병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-425-2001",
+            "address": "(22135) 인천광역시 남구 미추홀대로 726 (주안동)"
+          },
+          {
+            "kor": "길병원",
+            "eng": "Gachon University Gil Medical Center",
+            "type": "상급종합",
+            "rep-phone": "032-1577-2299",
+            "address": "(21565) 인천광역시 남동구 남동대로774번길 21 (구월동)"
+          },
+          {
+            "kor": "인천광역시의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-580-6000",
+            "address": "(22532) 인천광역시 동구 방축로 217- 217"
+          },
+          {
+            "kor": "의료법인 성수의료재단 인천백병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-765-7070",
+            "address": "(22534) 인천광역시 동구 샛골로 214 (송림동)"
+          },
+          {
+            "kor": "가톨릭대학교인천성모병원",
+            "eng": "The Catholic University of Korea Incheon St.Mary's Hospital",
+            "type": "상급종합",
+            "rep-phone": "032-1544-9004",
+            "address": "(21431) 인천광역시 부평구 동수로 56 (부평동)"
+          },
+          {
+            "kor": "근로복지공단인천병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-500-1116",
+            "address": "(0) 인천광역시 부평구 무네미로 446- (구산동)"
+          },
+          {
+            "kor": "부평세림병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-524-0591",
+            "address": "(21364) 인천광역시 부평구 부평대로 175 (부평동)"
+          },
+          {
+            "kor": "의료법인성세의료재단 성민병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-726-1000",
+            "address": "(22789) 인천광역시 서구 신석로 70 (석남동)"
+          },
+          {
+            "kor": "가톨릭관동대학교 국제성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-1600-8291",
+            "address": "(22711) 인천광역시 서구 심곡로100번길 25 (심곡동)"
+          },
+          {
+            "kor": "온누리병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-567-6200",
+            "address": "(22616) 인천광역시 서구 완정로 199 199"
+          },
+          {
+            "kor": "의료법인루가의료재단 나은병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-584-0114",
+            "address": "(22819) 인천광역시 서구 원적로 23 23"
+          },
+          {
+            "kor": "검단탑병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-590-0114",
+            "address": "(22675) 인천광역시 서구 청마로19번길 5 (당하동)"
+          },
+          {
+            "kor": "나사렛국제병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-899-9999",
+            "address": "(21972) 인천광역시 연수구 먼우금로 98 (동춘동)"
+          },
+          {
+            "kor": "인천적십자병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-280-2114",
+            "address": "(21935) 인천광역시 연수구 원인재로 263- 263"
+          },
+          {
+            "kor": "인천기독병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "032-270-8000",
+            "address": "(22320) 인천광역시 중구 답동로30번길 10 (율목동)"
+          },
+          {
+            "kor": "인하대학교의과대학부속병원",
+            "eng": "Inha University Hospital",
+            "type": "상급종합",
+            "rep-phone": "032-890-2114",
+            "address": "(22332) 인천광역시 중구 인항로 27 (신흥동3가)"
+          },
+          {
+            "kor": "의료법인영성의료재단 고흥종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-835-6000",
+            "address": "(59535) 전라남도 고흥군 고흥읍 고흥로 1935 ()"
+          },
+          {
+            "kor": "고흥윤호21병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-830-7000",
+            "address": "(59543) 전라남도 고흥군 고흥읍 터미널길 16-16 16"
+          },
+          {
+            "kor": "광양사랑병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-797-7000",
+            "address": "(57788) 전라남도 광양시 공영로 71 (중동)"
+          },
+          {
+            "kor": "나주종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-330-6114",
+            "address": "(58251) 전라남도 나주시 영산로 5419 (성북동)"
+          },
+          {
+            "kor": "의료법인해민의료재단 세안종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-260-6713",
+            "address": "(58618) 전라남도 목포시 고하대로 795-2 (연산동)"
+          },
+          {
+            "kor": "목포기독병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-280-7500",
+            "address": "(58666) 전라남도 목포시 백년대로 303 (상동)"
+          },
+          {
+            "kor": "목포한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-270-5800",
+            "address": "(58643) 전라남도 목포시 영산로 483 (상동)"
+          },
+          {
+            "kor": "목포중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-280-3000",
+            "address": "(58615) 전라남도 목포시 영산로 623 (석현동)"
+          },
+          {
+            "kor": "목포시의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-260-6500",
+            "address": "(58701) 전라남도 목포시 이로로 18 (용해동)"
+          },
+          {
+            "kor": "의료법인대송의료재단 무안병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-450-3111",
+            "address": "(58532) 전라남도 무안군 무안읍 몽탄로 65 ()"
+          },
+          {
+            "kor": "성가롤로병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-720-2000",
+            "address": "(57931) 전라남도 순천시 순광로 221 (조례동)"
+          },
+          {
+            "kor": "의료법인한국의료재단 순천한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-740-5000",
+            "address": "(57991) 전라남도 순천시 우명길 42 (연향동)"
+          },
+          {
+            "kor": "순천중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-749-5000",
+            "address": "(57956) 전라남도 순천시 장명로 5 (장천동)"
+          },
+          {
+            "kor": "근로복지공단 순천병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-720-7575",
+            "address": "(57947) 전라남도 순천시 조례1길 24 (조례동)"
+          },
+          {
+            "kor": "의료법인서구의료재단 여수성심병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-650-8000",
+            "address": "(59696) 전라남도 여수시 둔덕5길 19 (둔덕동)"
+          },
+          {
+            "kor": "여천전남병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-690-6000",
+            "address": "(59641) 전라남도 여수시 무선로 95 (선원동)"
+          },
+          {
+            "kor": "여수전남병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-640-7128",
+            "address": "(59718) 전라남도 여수시 좌수영로 49 (광무동)"
+          },
+          {
+            "kor": "의료법인거명의료재단 영광기독병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-350-3015",
+            "address": "(57044) 전라남도 영광군 영광읍 신남로 265 ()"
+          },
+          {
+            "kor": "영광종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-350-8091",
+            "address": "(57035) 전라남도 영광군 영광읍 와룡로 3 ()"
+          },
+          {
+            "kor": "의료법인 우범의료재단 장흥종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-862-8300",
+            "address": "(59325) 전라남도 장흥군 장흥읍 흥성로 74 74"
+          },
+          {
+            "kor": "해남우리종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-530-7000",
+            "address": "(59021) 전라남도 해남군 옥천면 해남로 597 ()"
+          },
+          {
+            "kor": "의료법인행촌의료재단 해남병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "061-536-4116",
+            "address": "(59024) 전라남도 해남군 해남읍 해남로 45 ()"
+          },
+          {
+            "kor": "화순전남대학교병원",
+            "eng": "Chonnam University Hwasun Hospital",
+            "type": "상급종합",
+            "rep-phone": "061-379-7114",
+            "address": "(58128) 전라남도 화순군 화순읍 서양로 322 ()"
+          },
+          {
+            "kor": "의료법인석천재단고창병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-560-5600",
+            "address": "(56436) 전라북도 고창군 고창읍 화신1길 9 ()"
+          },
+          {
+            "kor": "전라북도 군산의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-472-5000",
+            "address": "(54105) \"전라북도 군산시 의료원로 27 (지곡동"
+          },
+          {
+            "kor": "의료법인 오성의료재단 동군산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-440-0300",
+            "address": "(54033) 전라북도 군산시 조촌로 149 (조촌동)"
+          },
+          {
+            "kor": "전라북도 남원의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-620-1114",
+            "address": "(55726) 전라북도 남원시 충정로 365 (고죽동)"
+          },
+          {
+            "kor": "부안성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-581-5100",
+            "address": "(56313) 전라북도 부안군 부안읍 오정2길 24 ()"
+          },
+          {
+            "kor": "원광대학교병원",
+            "eng": "Wonkwang University Hospital",
+            "type": "상급종합",
+            "rep-phone": "063-859-1114",
+            "address": "(54538) 전라북도 익산시 무왕로 895 (신동)"
+          },
+          {
+            "kor": "(의료법인 대산의료재단) 익산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-840-9114",
+            "address": "(54543) 전라북도 익산시 무왕로 969 (신동)"
+          },
+          {
+            "kor": "전북대학교병원",
+            "eng": "Chonbuk National University Hospital",
+            "type": "상급종합",
+            "rep-phone": "063-250-1114",
+            "address": "(54907) 전라북도 전주시 덕진구 건지로 20 (금암동)"
+          },
+          {
+            "kor": "대자인병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-240-2000",
+            "address": "(54910) 전라북도 전주시 덕진구 견훤로 390 (우아동3가)"
+          },
+          {
+            "kor": "전주고려병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-240-7300",
+            "address": "(54915) 전라북도 전주시 덕진구 안덕원로 367 (산정동)"
+          },
+          {
+            "kor": "재단법인예수병원유지재단예수병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-230-8114",
+            "address": "(54987) \"전라북도 전주시 완산구 서원로 365 (중화산동1가"
+          },
+          {
+            "kor": "의료법인영경의료재단전주병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-220-7200",
+            "address": "(54985) \"전라북도 전주시 완산구 한두평3길 13 (중화산동2가"
+          },
+          {
+            "kor": "재단법인 아산사회복지재단 정읍아산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "063-530-6000",
+            "address": "(56153) 전라북도 정읍시 충정로 606-22 (용계동)"
+          },
+          {
+            "kor": "제주특별자치도 서귀포의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "064-730-3000",
+            "address": "(63585) 제주특별자치도 서귀포시 장수로 47 (동홍동)"
+          },
+          {
+            "kor": "제주한라병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "064-740-5000",
+            "address": "(0) 제주특별자치도 제주시 도령로 65- 65"
+          },
+          {
+            "kor": "의료법인 혜인의료재단 한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "064-750-0000",
+            "address": "(63183) 제주특별자치도 제주시 서광로 193 (삼도일동)"
+          },
+          {
+            "kor": "제주대학교병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "064-717-1075",
+            "address": "(63241) 제주특별자치도 제주시 아란13길 15 제주대학교병원 (아라일동)"
+          },
+          {
+            "kor": "한마음병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "064-750-9000",
+            "address": "(63227) 제주특별자치도 제주시 연신로 52 (이도이동)"
+          },
+          {
+            "kor": "의료법인 중앙의료재단 중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "064-786-7000",
+            "address": "(63109) 제주특별자치도 제주시 월랑로 91 (이호이동)"
+          },
+          {
+            "kor": "충청남도 공주의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-962-1111",
+            "address": "(32535) 충청남도 공주시 무령로 77 (웅진동)"
+          },
+          {
+            "kor": "의료법인 백제병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-733-2191",
+            "address": "(32980) 충청남도 논산시 시민로294번길 14 (취암동)"
+          },
+          {
+            "kor": "당진종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-357-0100",
+            "address": "(31764) 충청남도 당진시 반촌로 5-15 (시곡동)"
+          },
+          {
+            "kor": "재단법인 아산사회복지재단 부속 보령아산병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-930-5114",
+            "address": "(33428) 충청남도 보령시 죽성로 136 (죽정동)"
+          },
+          {
+            "kor": "서산중앙병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-661-1000",
+            "address": "(32010) 충청남도 서산시 수석산업로 5 (수석동)"
+          },
+          {
+            "kor": "충청남도 서산의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-689-7000",
+            "address": "(32001) 충청남도 서산시 중앙로 149 (석림동)"
+          },
+          {
+            "kor": "아산충무병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-570-5470",
+            "address": "(31528) 충청남도 아산시 문화로 381 (모종동)"
+          },
+          {
+            "kor": "예산종합병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-330-4000",
+            "address": "(32432) 충청남도 예산군 예산읍 금오대로 94 ()"
+          },
+          {
+            "kor": "단국대학교의과대학부속병원",
+            "eng": "Dankook University Hospital",
+            "type": "상급종합",
+            "rep-phone": "041-1588-0063",
+            "address": "(31116) 충청남도 천안시 동남구 망향로 201 (안서동)"
+          },
+          {
+            "kor": "학교법인 동은학원 순천향대학교부속 천안병원",
+            "eng": "Soon Chun Hyang University Hospital Cheonan",
+            "type": "상급종합",
+            "rep-phone": "041-570-2018",
+            "address": "(31151) \"충청남도 천안시 동남구 순천향6길 31 5동 (봉명동"
+          },
+          {
+            "kor": "충청남도 천안의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-570-7200",
+            "address": "(31071) 충청남도 천안시 동남구 충절로 537 (삼룡동)"
+          },
+          {
+            "kor": "의료법인영서의료재단천안충무병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-570-7555",
+            "address": "(31181) 충청남도 천안시 서북구 다가말3길 8 (쌍용동)"
+          },
+          {
+            "kor": "충청남도 홍성의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "041-630-6114",
+            "address": "(32232) 충청남도 홍성군 홍성읍 조양로 224 ()"
+          },
+          {
+            "kor": "의료법인 힐링의료재단 옥천성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-730-7000",
+            "address": "(29031) 충청북도 옥천군 옥천읍 성왕로 1195 1195"
+          },
+          {
+            "kor": "의료법인명지의료재단명지병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-640-8114",
+            "address": "(27140) 충청북도 제천시 내토로 991 991"
+          },
+          {
+            "kor": "의료법인 자산의료재단 제천서울병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-642-7606",
+            "address": "(27170) 충청북도 제천시 숭문로 57 (서부동)"
+          },
+          {
+            "kor": "의료법인건명의료재단진천성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-533-1711",
+            "address": "(27832) 충청북도 진천군 진천읍 중앙북로 36 (진천읍)"
+          },
+          {
+            "kor": "의료법인 인화재단 한국병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-222-6170",
+            "address": "(28713) 충청북도 청주시 상당구 단재로 106 (영운동)"
+          },
+          {
+            "kor": "의료법인 정산의료재단 효성병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-221-5000",
+            "address": "(28736) 충청북도 청주시 상당구 쇠내로 16 (금천동)"
+          },
+          {
+            "kor": "충북대학교병원",
+            "eng": "Chungbuk National University",
+            "type": "상급종합",
+            "rep-phone": "043-269-6311",
+            "address": "(28644) 충청북도 청주시 서원구 1순환로 776 (개신동)"
+          },
+          {
+            "kor": "충청북도 청주의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-279-2300",
+            "address": "(28547) 충청북도 청주시 서원구 흥덕로 48 (사직동)"
+          },
+          {
+            "kor": "청주성모병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-219-8000",
+            "address": "(28323) 충청북도 청주시 청원구 주성로 173-19 (주중동)"
+          },
+          {
+            "kor": "의료법인한마음의료재단하나병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-230-6114",
+            "address": "(28378) 충청북도 청주시 흥덕구 2순환로 1262 (가경동)"
+          },
+          {
+            "kor": "건국대학교 충주병원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-840-8200",
+            "address": "(27376) 충청북도 충주시 국원대로 82 (교현동)"
+          },
+          {
+            "kor": "충청북도 충주의료원",
+            "eng": "",
+            "type": "종합병원",
+            "rep-phone": "043-871-0422",
+            "address": "(27486) 충청북도 충주시 안림로 239-50 (안림동)"
+          }
+        ]
+      }
+    });
+  </script>
+</body>
+
+</html>
